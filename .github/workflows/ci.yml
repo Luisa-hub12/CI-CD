@@ -31,9 +31,6 @@ jobs:
 
   # TODO TP 1 : un job « lint » qui lance npm run lint (copiez le job test et changez la dernière ligne)
   lint:
-    strategy:
-      matrix:
-        node: [22, 24]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -47,9 +44,6 @@ jobs:
   # puis garde ce qu'il faut pour lancer l'application avec l'action actions/upload-artifact@v7 :
   build:
     needs: [lint, test]
-    strategy:
-      matrix:
-        node: [22, 24]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
