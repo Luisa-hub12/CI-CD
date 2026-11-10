@@ -7,7 +7,10 @@ import { spawnSync } from "node:child_process";
 
 const VERSION = "v8.30.1";
 const what = process.argv[2] ?? "staged";
-const args = what === "history" ? ["git", "--verbose", "--redact"] : ["git", "--staged", "--redact"];
+const args =
+  what === "history"
+    ? ["git", "--verbose", "--redact", "--config", "/repo/.gitleaks.toml"]
+    : ["git", "--staged", "--redact", "--config", "/repo/.gitleaks.toml"];
 
 const local = spawnSync("gitleaks", ["version"], { stdio: "ignore", shell: process.platform === "win32" });
 let res: ReturnType<typeof spawnSync>;
