@@ -6,6 +6,9 @@ on:
   #   push:
   #     branches: [main]
   #     paths-ignore: ["deploy/**"]
+  push:
+    branches: [main]
+    paths-ignore: ["deploy/**"]
   workflow_dispatch:
 
 permissions:
