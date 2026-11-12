@@ -21,7 +21,8 @@
     "observatory": "node tools/observatory.ts",
     "weight": "node tools/weight.ts",
     "images:optimize": "node tools/images.ts",
-    "changelog": "git-cliff -o CHANGELOG.md"
+    "changelog": "git-cliff -o CHANGELOG.md",
+    "qodana": "docker run --rm -it -e QODANA_TOKEN -v \"$(pwd):/data/project\" -p 8080:8080 jetbrains/qodana-js --show-report"
   },
   "dependencies": {
     "express": "^4.22.3",

@@ -1,0 +1,35 @@
+name: Qodana
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: write
+  security-events: write
+
+jobs:
+  qodana:
+    name: Qodana Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Récupère tout l'historique Git pour l'analyse des commits et des changements
+
+      - name: Qodana Scan
+        uses: JetBrains/qodana-action@v2024.3
+        env:
+          # Le jeton Qodana Cloud est optionnel.
+          # S'il est configuré dans vos secrets GitHub (Settings -> Secrets -> Actions),
+          # les résultats sont synchronisés sur le tableau de bord Qodana Cloud.
+          # S'il est absent, le scan fonctionne quand même en mode local/rapport SARIF & artefact.
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        with:
+          upload-result: true

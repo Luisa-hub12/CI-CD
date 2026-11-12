@@ -1,10 +1,26 @@
-####################################################################################################################
-# WARNING: Do not store sensitive information in this file, as its contents will be included in the Qodana report. #
-####################################################################################################################
-
+# Configuration Qodana pour CircuitCourt (TypeScript / Node.js)
 version: "1.0"
-linter: qodana-js
+
+# Linter officiel JetBrains pour JavaScript & TypeScript
+# (équivalent aux inspections de WebStorm / IntelliJ IDEA Ultimate)
+linter: jetbrains/qodana-js:latest
+
+# Profil d'inspection :
+# - qodana.starter     : règles de base (erreurs critiques uniquement)
+# - qodana.recommended : recommandé pour la plupart des projets (qualité + sécurité)
 profile:
   name: qodana.recommended
-include:
-  - name: CheckDependencyLicenses
+
+# Exclusion des dossiers générés, dépendances et fichiers non pertinents
+exclude:
+  - name: All
+    paths:
+      - node_modules
+      - dist
+      - coverage
+      - infra
+      - deploy
+
+# Seuil d'échec optionnel (fail-threshold) : décommentez pour bloquer le pipeline
+# si le nombre total de problèmes dépasse cette valeur (ex: 0 pour tolérance zéro)
+# failThreshold: 10

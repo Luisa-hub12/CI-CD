@@ -5,4 +5,5 @@ reports/
 .env
 *.log
 .scannerwork/
+.qodana/
 src/config.ts
