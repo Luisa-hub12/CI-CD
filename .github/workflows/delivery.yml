@@ -3,9 +3,6 @@ name: Delivery
 
 on:
   # TODO TP 4 : à chaque push sur main, sauf quand seul le dossier deploy/ change :
-  #   push:
-  #     branches: [main]
-  #     paths-ignore: ["deploy/**"]
   push:
     branches: [main]
     paths-ignore: ["deploy/**"]
@@ -13,6 +10,7 @@ on:
 
 permissions:
   contents: read
+  packages: write
   # TODO TP 4 : le droit de publier l'image dans le registre de GitHub (packages: write)
 
 jobs:
