@@ -18,7 +18,8 @@ jobs:
         with:
           node-version: 26
       - run: npm ci
-      - run: npm run verify
+      - run: npm run lint
+      - run: npm run test
 
   # TODO TP 1 : un job « build » qui attend lint et test (needs: [lint, test]), lance npm run build,
   # puis garde ce qu'il faut pour lancer l'application avec l'action actions/upload-artifact@v7 :
