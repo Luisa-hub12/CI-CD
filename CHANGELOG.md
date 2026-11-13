@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.1.0](https://github.com/Luisa-hub12/CI-CD/compare/v1.0.0...v1.1.0) (2026-11-13)
+
+
+### Features
+
+* add Dockerfile for multi-stage build and .dockerignore; include new image assets ([a91d7c6](https://github.com/Luisa-hub12/CI-CD/commit/a91d7c6473c7bda4602c3b6a6ae980785752824c))
+* update CI workflow to ignore markdown files and refine job step ([709c11d](https://github.com/Luisa-hub12/CI-CD/commit/709c11d5e02a9164b03eebfbdb032ab185c70444))
+
+
+### Bug Fixes
+
+* add build step and artifact upload in CI workflow ([247f942](https://github.com/Luisa-hub12/CI-CD/commit/247f94256286e1f055199eb3db273cca364444be))
+* switch base image to node:24-alpine for smaller final image size ([d931c83](https://github.com/Luisa-hub12/CI-CD/commit/d931c83053b68e6606f0d520383a8449d25f9e4a))
+* switch base image to node:24-alpine for smaller final image size ([274582e](https://github.com/Luisa-hub12/CI-CD/commit/274582e14e8aba34dd259473b891f940dbdf5220))
+* update CI workflow to include concurrency settings and refine job steps ([5348cfb](https://github.com/Luisa-hub12/CI-CD/commit/5348cfbef314908516f07e3cacd801a5e0f2251e))
+* update CI workflow to run lint and test commands in verify job ([7d45e26](https://github.com/Luisa-hub12/CI-CD/commit/7d45e26a05b87b6ba8ae1af60108e847b1358380))
+* update CI workflow to use verify job and add job metrics in measures ([bc72e32](https://github.com/Luisa-hub12/CI-CD/commit/bc72e3200a3525ab5cca99828af899a9916a53bd))
+* update security headers to include report-only CSP directive ([526f6e4](https://github.com/Luisa-hub12/CI-CD/commit/526f6e4ef180c88eca6391e5da188bfa6a825979))
+
 ## 1.0.0 (2026-11-12)
 
 
