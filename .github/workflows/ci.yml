@@ -1,13 +1,23 @@
-# Le pipeline de CircuitCourt. Pour l'instant, il ne fait que lancer les tests.
 name: CI
 
 on:
   push:
     branches: [main]
-  # TODO TP 1 : lancer aussi le pipeline sur chaque pull request (pull_request:)
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
   pull_request:
     branches: [main]
-  
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  schedule:
+    # Mesure hebdomadaire : tous les lundis à 03h00 UTC
+    - cron: '0 3 * * 1'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   verify:
@@ -17,54 +27,8 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 26
+          cache: 'npm'
       - run: npm ci
       - run: npm run lint
       - run: npm run test
       - run: npm run build
-
-      - uses: actions/upload-artifact@v7
-        with:
-          name: circuitcourt
-          path: |
-            dist
-            public
-            node_modules
-            package.json
-
-  sonar:
-    needs: [verify]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-  image:
-    needs: [verify]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/download-artifact@v7
-        with:
-          name: circuitcourt
-
-  # TODO TP 1 : un job « build » qui attend lint et test (needs: [lint, test]), lance npm run build,
-  # puis garde ce qu'il faut pour lancer l'application avec l'action actions/upload-artifact@v7 :
-  build:
-    needs: [verify]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 26
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/upload-artifact@v7
-        with:
-          name: circuitcourt
-          path: |
-            dist
-            public
-            node_modules
-            package.json
