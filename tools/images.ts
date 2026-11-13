@@ -13,7 +13,7 @@ const folder = path.join("public", "images");
 
 let before = 0;
 let after = 0;
-for (const name of readdirSync(folder).filter((n) => n.endsWith(".png"))) {
+for (const name of readdirSync(folder).filter((n) => n.endsWith(""))) {
   const source = path.join(folder, name);
   const target = source.replace(/\.png$/, ".webp");
   await sharp(source).resize({ width }).webp({ quality }).toFile(target);
