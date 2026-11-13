@@ -13,8 +13,8 @@ Relevé du groupe, pour un push sur main. Colonne « Avant » : TP 5. Colonne «
 | Carbone par mois, 800 pipelines, 480 g CO₂e/kWh (kg CO₂e) | | |
 | Poids de l'image Docker | 2.48Go | |
 | Poids de la page d'accueil | 7.6Mo | |
-| Requêtes de la page | | |
-| EcoIndex (note et lettre) | | |
+| Requêtes de la page | 15 | |
+| EcoIndex (note et lettre) | 70 (C) | |
 | Artefacts conservés (quoi, combien de jours) | | |
 
 **Notre plus grand gain :**

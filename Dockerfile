@@ -1,19 +1,18 @@
-# Image de CircuitCourt : simple, mais lourde.
-# TODO TP 6 : une image légère en deux étapes (modèle sur la slide du TP), et un fichier .dockerignore
-FROM node:24-alpine as build
-
+FROM node:24 AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+RUN npm ci --ignore-scripts
+COPY tsconfig.json tsconfig.build.json ./
+COPY src ./src
+RUN npm run build && npm prune --omit=dev
 
-FROM node:24-alpine
-WORKDIR /app
+FROM node:24 AS runner
 ENV NODE_ENV=production
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
-COPY --from=build /app/dist ./dist
-
+WORKDIR /app
+COPY --from=builder /app/node_modules ./node_modules
+COPY public ./public
+COPY package.json ./
+COPY --from=builder /app/dist ./dist
+USER node
 EXPOSE 3000
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/server.js"]

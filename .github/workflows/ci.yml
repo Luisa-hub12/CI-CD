@@ -6,29 +6,139 @@ on:
     paths-ignore:
       - '**.md'
       - 'docs/**'
+      - 'deploy/**'
+      - 'Deploy/**'
   pull_request:
     branches: [main]
     paths-ignore:
       - '**.md'
       - 'docs/**'
-  schedule:
-    # Mesure hebdomadaire : tous les lundis à 03h00 UTC
-    - cron: '0 3 * * 1'
+      - 'deploy/**'
+      - 'Deploy/**'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   verify:
+    name: Verification (Lint, Tests, Build & Security)
     runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - name: Checkout repository
+        uses: actions/checkout@v7
         with:
-          node-version: 26
+          # Tout l'historique Git pour que Gitleaks détecte d'anciens secrets éventuels
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
           cache: 'npm'
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run test
-      - run: npm run build
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint and format check
+        run: npm run lint
+
+      - name: Tests and coverage
+        run: npm run test:coverage
+
+      - name: Build application
+        run: npm run build
+
+      - name: Security - Secrets detection (Gitleaks)
+        run: npm run gitleaks
+
+      - name: Security - Dependencies audit
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Security - Snyk
+        if: env.SNYK_TOKEN != ''
+        uses: snyk/actions/node@v1.0.0
+        with:
+          args: --severity-threshold=high
+
+      - name: Start application
+        run: |
+          npm start &
+          curl --retry 10 --retry-connrefused --retry-delay 1 --silent http://localhost:3000/health
+
+      - name: Security - HTTP security headers (Mozilla Observatory)
+        run: npm run observatory -- circuitcourt.localhost:3000 60
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: coverage/lcov.info
+          retention-days: 1
+
+  sonar:
+    name: Quality (SonarQube)
+    needs: verify
+    runs-on: [self-hosted, local]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # Tout l'historique : SonarQube repère le « nouveau code »
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: coverage
+          path: coverage
+
+      - name: SonarQube scan
+        uses: SonarSource/sonarqube-scan-action@v8
+        env:
+          SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}"
+          SONAR_HOST_URL: "${{ vars.SONAR_HOST_URL }}"
+
+  delivery:
+    name: Delivery (Docker Build & Push to GHCR)
+    needs: [verify, sonar]
+    # Se déclenche uniquement sur push sur main ou exécution manuelle (pas sur PR)
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image name and tag
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/circuitcourt
+          tags: type=sha,prefix=sha-
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}

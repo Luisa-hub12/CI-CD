@@ -2,7 +2,11 @@ node_modules
 dist
 .git
 .github
-.env
+.husky
 *.md
 coverage
-.vscode
+reports
+tests
+tools
+deploy
+infra

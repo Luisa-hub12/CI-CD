@@ -2,12 +2,11 @@
 name: Measures
 
 on:
-  # TODO TP 5 : à chaque push sur main et à chaque pull request
-  push:
-    branches:
-      - main
-  pull_request:
+  schedule:
+    - cron: '0 6 * * 1'
   workflow_dispatch:
+  pull_request:
+    paths: [public/**]
 
 permissions:
   contents: read
