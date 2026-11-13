@@ -10,46 +10,26 @@ on:
   
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    # TODO TP 1 : tester sous Node 22 et sous Node 24 avec une matrice :
-    #   strategy:
-    #     matrix:
-    #       node: [22, 24]
-    # puis node-version: ${{ matrix.node }} à la place de 24
-    strategy:
-      matrix:
-        node: [24,26]
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version: ${{ matrix.node }}
-      - run: npm ci
-      # TODO TP 2 : npm run test:coverage, pour que le pipeline échoue sous les seuils de couverture
-      - run: npm run test:coverage
-      
-  # TODO TP 1 : un job « lint » qui lance npm run lint (copiez le job test et changez la dernière ligne)
-  lint:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 26
       - run: npm ci
-      - run: npm run lint
+      - run: npm run verify
 
   # TODO TP 1 : un job « build » qui attend lint et test (needs: [lint, test]), lance npm run build,
   # puis garde ce qu'il faut pour lancer l'application avec l'action actions/upload-artifact@v7 :
   build:
-    needs: [lint, test]
+    needs: [verify]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 26
       - run: npm ci
       - run: npm run build
       - uses: actions/upload-artifact@v7

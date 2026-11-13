@@ -6,13 +6,13 @@ Relevé du groupe, pour un push sur main. Colonne « Avant » : TP 5. Colonne «
 
 | Mesure | Avant | Après |
 |---|---|---|
-| Nombre de jobs | | |
-| Nombre de `npm ci` | | |
-| Durée totale des jobs (onglet Actions, « Usage ») | | |
+| Nombre de jobs | 14 | |
+| Nombre de `npm ci` | 7 | |
+| Durée totale des jobs (onglet Actions, « Usage ») | 1min23 | |
 | Énergie estimée par pipeline (durée × 20 W, en Wh) | | |
 | Carbone par mois, 800 pipelines, 480 g CO₂e/kWh (kg CO₂e) | | |
-| Poids de l'image Docker | | |
-| Poids de la page d'accueil | | |
+| Poids de l'image Docker | 2.48Go | |
+| Poids de la page d'accueil | 7.6Mo | |
 | Requêtes de la page | | |
 | EcoIndex (note et lettre) | | |
 | Artefacts conservés (quoi, combien de jours) | | |
