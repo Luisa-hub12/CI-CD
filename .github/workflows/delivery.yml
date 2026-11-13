@@ -10,8 +10,8 @@ on:
 
 permissions:
   contents: read
-  packages: write
   # TODO TP 4 : le droit de publier l'image dans le registre de GitHub (packages: write)
+  packages: write
 
 jobs:
   image:

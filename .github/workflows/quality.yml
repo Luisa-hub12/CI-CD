@@ -4,13 +4,10 @@ name: Quality
 on:
   # TODO TP 2 : lancer l'analyse à chaque push sur main et à chaque pull request, comme dans ci.yml.
   # Pour l'instant, elle ne se lance qu'à la main (onglet Actions, bouton « Run workflow »).
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
 
 jobs:
   sonar:
@@ -29,6 +26,6 @@ jobs:
       - uses: SonarSource/sonarqube-scan-action@v8
         env:
           # TODO TP 2 : le jeton est confidentiel : ${{ secrets.SONAR_TOKEN }}
-          SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}"
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           # TODO TP 2 : l'adresse du serveur ne l'est pas : ${{ vars.SONAR_HOST_URL }}
-          SONAR_HOST_URL: "${{ vars.SONAR_HOST_URL }}"
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
